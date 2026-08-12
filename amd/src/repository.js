@@ -8,83 +8,65 @@
  * @copyright  2026 Moodle
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define([], function() {
-    'use strict';
 
-    const todos = [
-        {id: 1, text: 'Read the workshop introduction', completed: false},
-        {id: 2, text: 'Try the AMD todo block', completed: false},
-        {id: 3, text: 'Discuss the next frontend migration', completed: false},
-    ];
-    let nextId = 4;
+const todos = [
+    {id: 1, text: 'Read the workshop introduction', completed: false},
+    {id: 2, text: 'Try the AMD todo block', completed: false},
+    {id: 3, text: 'Discuss the next frontend migration', completed: false},
+];
+let nextId = 4;
 
-    const copyTodo = function(todo) {
-        return {...todo};
-    };
+const copyTodo = (todo) => ({...todo});
 
-    /**
-     * Get all todos without exposing the internal array.
-     *
-     * @returns {Promise<Array>}
-     */
-    const getTodos = async function() {
-        return todos.map(copyTodo);
-    };
+/**
+ * Get all todos without exposing the internal array.
+ *
+ * @returns {Promise<Array>}
+ */
+export const getTodos = async() => todos.map(copyTodo);
 
-    /**
-     * Create a todo.
-     *
-     * @param {String} text
-     * @returns {Promise<Object>}
-     */
-    const createTodo = async function(text) {
-        const todo = {id: nextId++, text: text, completed: false};
-        todos.push(todo);
-        return copyTodo(todo);
-    };
+/**
+ * Create a todo.
+ *
+ * @param {String} text
+ * @returns {Promise<Object>}
+ */
+export const createTodo = async(text) => {
+    const todo = {id: nextId++, text, completed: false};
+    todos.push(todo);
+    return copyTodo(todo);
+};
 
-    /**
-     * Update a todo.
-     *
-     * @param {Object} todo
-     * @returns {Promise<Object|null>}
-     */
-    const updateTodo = async function(todo) {
-        const index = todos.findIndex(function(existingTodo) {
-            return existingTodo.id === todo.id;
-        });
+/**
+ * Update a todo.
+ *
+ * @param {Object} todo
+ * @returns {Promise<Object|null>}
+ */
+export const updateTodo = async(todo) => {
+    const index = todos.findIndex((existingTodo) => existingTodo.id === todo.id);
 
-        if (index === -1) {
-            return null;
-        }
+    if (index === -1) {
+        return null;
+    }
 
-        todos[index] = copyTodo(todo);
-        return copyTodo(todos[index]);
-    };
+    todos[index] = copyTodo(todo);
+    return copyTodo(todos[index]);
+};
 
-    /**
-     * Delete a todo.
-     *
-     * @param {Number} id
-     * @returns {Promise<Boolean>}
-     */
-    const deleteTodo = async function(id) {
-        const index = todos.findIndex(function(todo) {
-            return todo.id === id;
-        });
+/**
+ * Delete a todo.
+ *
+ * @param {Number} id
+ * @returns {Promise<Boolean>}
+ */
+export const deleteTodo = async(id) => {
+    const index = todos.findIndex((todo) => todo.id === id);
 
-        if (index === -1) {
-            return false;
-        }
+    if (index === -1) {
+        return false;
+    }
 
-        todos.splice(index, 1);
-        return true;
-    };
-
-    return {
-        getTodos: getTodos,
-        createTodo: createTodo,
-        updateTodo: updateTodo,
-        deleteTodo: deleteTodo,
-    };
-});
+    todos.splice(index, 1);
+    return true;
+};

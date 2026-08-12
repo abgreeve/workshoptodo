@@ -1,0 +1,10 @@
+<div id="{{rootid}}" class="block-workshoptodo-app">
+    {{> block_workshoptodo/todo}}
+    <form data-region="add-todo-form">
+        <label class="visually-hidden" for="new-todo-{{rootid}}">New todo</label>
+        <div class="input-group">
+            <input class="form-control" id="new-todo-{{rootid}}" name="text" type="text" placeholder="New todo" required>
+            <button class="btn btn-primary" type="submit">Add</button>
+        </div>
+    </form>
+</div>

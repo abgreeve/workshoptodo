@@ -38,7 +38,7 @@ class renderer extends plugin_renderer_base {
         $data = $page->export_for_template($this);
         // include js here.
         $this->page->requires->js_call_amd('block_workshoptodo/todo', 'init', ["#$data->rootid"]);
-        return parent::render_from_template('block_workshoptodo/todo', $data);
+        return parent::render_from_template('block_workshoptodo/block', $data);
     }
 
 }

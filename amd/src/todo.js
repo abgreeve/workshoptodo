@@ -5,75 +5,66 @@
  * @copyright  2026 Moodle
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/templates', 'block_workshoptodo/repository'], function(Templates, Repository) {
-    'use strict';
 
-    /**
-     * Render the current todos and attach handlers to the new markup.
-     *
-     * @param {HTMLElement} root
-     * @returns {Promise<void>}
-     */
-    const render = async function(root) {
-        const todos = await Repository.getTodos();
-        const result = await Templates.renderForPromise('block_workshoptodo/todo', {
-            todos: todos,
-            rootid: root.id,
-        });
+import Templates from 'core/templates';
+import * as Repository from 'block_workshoptodo/repository';
 
-        Templates.replaceNodeContents(root, result.html, result.js);
+/**
+ * Render the current todos and attach handlers to the new markup.
+ *
+ * @param {HTMLElement} root
+ * @returns {Promise<void>}
+ */
+const render = async(root) => {
+    const todos = await Repository.getTodos();
+    const result = await Templates.renderForPromise('block_workshoptodo/todo', {
+        todos,
+    });
 
-        const form = root.querySelector('[data-region="add-todo-form"]');
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
+    Templates.replaceNodeContents(root, result.html, result.js);
 
-            const input = form.elements.text;
-            const text = input.value.trim();
-            if (text === '') {
-                return;
-            }
+    root.querySelectorAll('[data-action="toggle"]').forEach((checkbox) => {
+        checkbox.addEventListener('change', async() => {
+            const id = Number(checkbox.dataset.todoId);
+            const todo = todos.find((currentTodo) => currentTodo.id === id);
 
-            await Repository.createTodo(text);
+            await Repository.updateTodo({...todo, completed: checkbox.checked});
             await render(root);
         });
+    });
 
-        root.querySelectorAll('[data-action="toggle"]').forEach(function(checkbox) {
-            checkbox.addEventListener('change', async function() {
-                const id = Number(checkbox.dataset.todoId);
-                const todo = todos.find(function(currentTodo) {
-                    return currentTodo.id === id;
-                });
-
-                await Repository.updateTodo({...todo, completed: checkbox.checked});
-                await render(root);
-            });
+    root.querySelectorAll('[data-action="delete"]').forEach((button) => {
+        button.addEventListener('click', async() => {
+            await Repository.deleteTodo(Number(button.dataset.todoId));
+            await render(root);
         });
+    });
+};
 
-        root.querySelectorAll('[data-action="delete"]').forEach(function(button) {
-            button.addEventListener('click', async function() {
-                await Repository.deleteTodo(Number(button.dataset.todoId));
-                await render(root);
-            });
-        });
-    };
+/**
+ * Start a todo block instance.
+ *
+ * @param {String} selector The block's unique root selector.
+ * @returns {Promise<void>}
+ */
+export const init = async(selector) => {
+    const container = document.querySelector(selector);
+    const root = container.querySelector('.workshop-todo');
+    const form = container.querySelector('[data-region="add-todo-form"]');
 
-    /**
-     * Start a todo block instance.
-     *
-     * @param {String} selector The block's unique root selector.
-     * @returns {Promise<void>}
-     */
-    const init = async function(selector) {
-        const root = document.querySelector(selector);
+    form.addEventListener('submit', async(event) => {
+        event.preventDefault();
 
-        window.console.log(selector);
-        window.console.log(root);
+        const input = form.elements.text;
+        const text = input.value.trim();
+        if (text === '') {
+            return;
+        }
 
-        render(root);
+        await Repository.createTodo(text);
+        input.value = '';
+        await render(root);
+    });
 
-    };
-
-    return {
-        init: init,
-    };
-});
+    await render(root);
+};

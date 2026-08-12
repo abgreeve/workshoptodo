@@ -1,32 +1,22 @@
-<div id="{{rootid}}" class="block-workshoptodo-app">
-    <ul class="list-group mb-3" aria-label="Todo list">
-        {{#todos}}
-            <li class="list-group-item d-flex align-items-center justify-content-between">
-                <div class="form-check mb-0">
-                    <input
-                        class="form-check-input"
-                        type="checkbox"
-                        id="todo-{{rootid}}-{{id}}"
-                        data-action="toggle"
-                        data-todo-id="{{id}}"
-                        {{#completed}}checked{{/completed}}
-                    >
-                    <label class="form-check-label {{#completed}}text-decoration-line-through{{/completed}}" for="todo-{{rootid}}-{{id}}">
-                        {{text}}
-                    </label>
-                </div>
-                <button class="btn btn-outline-danger btn-sm" type="button" data-action="delete" data-todo-id="{{id}}">
-                    Delete
-                </button>
-            </li>
-        {{/todos}}
-    </ul>
-
-    <form data-region="add-todo-form">
-        <label class="visually-hidden" for="new-todo-{{rootid}}">New todo</label>
-        <div class="input-group">
-            <input class="form-control" id="new-todo-{{rootid}}" name="text" type="text" placeholder="New todo" required>
-            <button class="btn btn-primary" type="submit">Add</button>
-        </div>
-    </form>
-</div>
+<ul class="list-group mb-3 workshop-todo" aria-label="Todo list">
+    {{#todos}}
+        <li class="list-group-item d-flex align-items-center justify-content-between">
+            <div class="form-check mb-0">
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="todo-{{rootid}}-{{id}}"
+                    data-action="toggle"
+                    data-todo-id="{{id}}"
+                    {{#completed}}checked{{/completed}}
+                >
+                <label class="form-check-label {{#completed}}text-decoration-line-through{{/completed}}" for="todo-{{rootid}}-{{id}}">
+                    {{text}}
+                </label>
+            </div>
+            <button class="btn btn-outline-danger btn-sm" type="button" data-action="delete" data-todo-id="{{id}}">
+                Delete
+            </button>
+        </li>
+    {{/todos}}
+</ul>
