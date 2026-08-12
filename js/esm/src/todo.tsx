@@ -7,7 +7,7 @@
  */
 
 import Templates from 'core/templates';
-import * as Repository from 'block_workshoptodo/repository';
+import * as Repository from '@moodle/lms/block_workshoptodo/repository';
 
 /**
  * Render the current todos and attach handlers to the new markup.
