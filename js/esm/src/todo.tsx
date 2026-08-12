@@ -6,7 +6,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-import Templates from 'core/templates';
+import {requireAsync} from '@moodle/lms/core/amd';
 import * as Repository from '@moodle/lms/block_workshoptodo/repository';
 
 /**
@@ -16,6 +16,7 @@ import * as Repository from '@moodle/lms/block_workshoptodo/repository';
  * @returns {Promise<void>}
  */
 const render = async(root) => {
+    const Templates = await requireAsync('core/templates');
     const todos = await Repository.getTodos();
     const result = await Templates.renderForPromise('block_workshoptodo/todo', {
         todos,
