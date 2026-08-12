@@ -67,7 +67,7 @@ export const init = async(props) => {
         await render(root);
     });
 
-    await render(root);
+    void render(root);
 };
 
 export default init;
