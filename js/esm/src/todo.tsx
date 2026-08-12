@@ -69,3 +69,5 @@ export const init = async(selector) => {
 
     await render(root);
 };
+
+export default init;
