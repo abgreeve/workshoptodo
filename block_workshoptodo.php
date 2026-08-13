@@ -31,14 +31,16 @@ class block_workshoptodo extends block_base {
      * @return stdClass
      */
     public function get_content(): stdClass {
+        global $OUTPUT;
+
         if ($this->content !== null) {
             return $this->content;
         }
 
-        $renderer = $this->page->get_renderer('block_workshoptodo');
-        $page = new \block_workshoptodo\output\todo();
+        $context = (object) ['rootid' => \html_writer::random_id('workshoptodo-')];
+
         $this->content = new stdClass();
-        $this->content->text = $renderer->render($page);
+        $this->content->text = $OUTPUT->render_from_template('block_workshoptodo/block', $context);
         $this->content->footer = '';
 
         return $this->content;
