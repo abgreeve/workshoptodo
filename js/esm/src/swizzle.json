@@ -2,5 +2,9 @@
   "todo": {
     "eject": "risky",
     "wrap": "risky"
+  },
+  "todolist": {
+    "eject": "risky",
+    "wrap": "risky"
   }
 }
