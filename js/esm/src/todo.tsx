@@ -9,6 +9,35 @@
 import {requireAsync} from '@moodle/lms/core/amd';
 import * as Repository from '@moodle/lms/block_workshoptodo/repository';
 
+
+const TodoList = ({todos, rootid}) => (
+    <ul className="list-group mb-3 workshop-todo" aria-label="Todo list">
+        {todos.map((todo) => (
+            <li className="list-group-item d-flex align-items-center justify-content-between">
+                <div className="form-check mb-0">
+                    <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={`todo-${rootid}-${todo.id}`}
+                        data-action="toggle"
+                        data-todo-id={todo.id}
+                        checked={todo.completed}
+                    />
+                    <label
+                        className={`form-check-label ${todo.completed ? 'text-decoration-line-through' : ''}`}
+                        htmlFor={`todo-${rootid}-${todo.id}`}
+                    >
+                        {todo.text}
+                    </label>
+                </div>
+                <button className="btn btn-outline-danger btn-sm" type="button" data-action="delete" data-todo-id={todo.id}>
+                    Delete
+                </button>
+            </li>
+        ))}
+    </ul>
+);
+
 /**
  * Render the current todos and attach handlers to the new markup.
  *
