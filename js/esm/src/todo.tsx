@@ -38,17 +38,20 @@ const TodoList = ({todos, rootid}) => (
     </ul>
 );
 
-const TodoApp = ({todos, rootid}) => (
-    <div id={rootid} className="block-workshoptodo-app">
-        <TodoList todos={todos} rootid={rootid} />
-        <form data-region="add-todo-form">
-            <label className="visually-hidden" htmlFor={`new-todo-${rootid}`}>New todo</label>
-            <div className="input-group">
-                <input className="form-control" id={`new-todo-${rootid}`} name="text" type="text" placeholder="New todo" required />
-                <button className="btn btn-primary" type="submit">Add</button>
-            </div>
-        </form>
-    </div>
-);
+const TodoApp = ({rootid}) => {
+
+    return (
+        <div id={rootid} className="block-workshoptodo-app">
+            {/*<TodoList todos={todos} rootid={rootid} />*/}
+            <form data-region="add-todo-form">
+                <label className="visually-hidden" htmlFor={`new-todo-${rootid}`}>New todo</label>
+                <div className="input-group">
+                    <input className="form-control" id={`new-todo-${rootid}`} name="text" type="text" placeholder="New todo" required />
+                    <button className="btn btn-primary" type="submit">Add</button>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 export default TodoApp;
