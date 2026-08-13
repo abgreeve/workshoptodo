@@ -9,7 +9,7 @@
 import {useEffect, useState} from 'react';
 import * as Repository from '@moodle/lms/block_workshoptodo/repository';
 
-const TodoList = ({todos, rootid, onDelete}) => (
+const TodoList = ({todos, rootid, onDelete, onToggle}) => (
     <ul className="list-group mb-3 workshop-todo" aria-label="Todo list">
         {todos.map((todo) => (
             <li className="list-group-item d-flex align-items-center justify-content-between">
@@ -21,6 +21,7 @@ const TodoList = ({todos, rootid, onDelete}) => (
                         data-action="toggle"
                         data-todo-id={todo.id}
                         checked={todo.completed}
+                        onChange={(event) => void onToggle(todo, event.target.checked)}
                     />
                     <label
                         className={`form-check-label ${todo.completed ? 'text-decoration-line-through' : ''}`}
@@ -48,6 +49,11 @@ const TodoApp = ({rootid}) => {
         void loadTodos();
     }, []);
 
+    const handleToggle = async(todo, completed) => {
+        await Repository.updateTodo({...todo, completed});
+        await loadTodos();
+    };
+
     const handleDelete = async(id) => {
         await Repository.deleteTodo(id);
         await loadTodos();
@@ -71,7 +77,7 @@ const TodoApp = ({rootid}) => {
 
     return (
         <div id={rootid} className="block-workshoptodo-app">
-            <TodoList todos={todos} rootid={rootid} onDelete={handleDelete} />
+            <TodoList todos={todos} rootid={rootid} onDelete={handleDelete} onToggle={handleToggle} />
             <form data-region="add-todo-form" onSubmit={(event) => void handleFormSubmit(event)}>
                 <label className="visually-hidden" htmlFor={`new-todo-${rootid}`}>New todo</label>
                 <div className="input-group">
