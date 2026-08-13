@@ -9,7 +9,7 @@
 import {useEffect, useState} from 'react';
 import * as Repository from '@moodle/lms/block_workshoptodo/repository';
 
-const TodoList = ({todos, rootid}) => (
+const TodoList = ({todos, rootid, onDelete}) => (
     <ul className="list-group mb-3 workshop-todo" aria-label="Todo list">
         {todos.map((todo) => (
             <li className="list-group-item d-flex align-items-center justify-content-between">
@@ -29,7 +29,7 @@ const TodoList = ({todos, rootid}) => (
                         {todo.text}
                     </label>
                 </div>
-                <button className="btn btn-outline-danger btn-sm" type="button" data-action="delete" data-todo-id={todo.id}>
+                <button className="btn btn-outline-danger btn-sm" type="button" onClick={() => void onDelete(todo.id)}>
                     Delete
                 </button>
             </li>
@@ -47,6 +47,11 @@ const TodoApp = ({rootid}) => {
     useEffect(() => {
         void loadTodos();
     }, []);
+
+    const handleDelete = async(id) => {
+        await Repository.deleteTodo(id);
+        await loadTodos();
+    };
 
     const handleFormSubmit = async(event) => {
         event.preventDefault();
@@ -66,7 +71,7 @@ const TodoApp = ({rootid}) => {
 
     return (
         <div id={rootid} className="block-workshoptodo-app">
-            <TodoList todos={todos} rootid={rootid} />
+            <TodoList todos={todos} rootid={rootid} onDelete={handleDelete} />
             <form data-region="add-todo-form" onSubmit={(event) => void handleFormSubmit(event)}>
                 <label className="visually-hidden" htmlFor={`new-todo-${rootid}`}>New todo</label>
                 <div className="input-group">
