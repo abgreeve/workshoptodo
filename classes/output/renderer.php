@@ -36,8 +36,6 @@ class renderer extends plugin_renderer_base {
 
     public function render_todo(renderable $page) {
         $data = $page->export_for_template($this);
-        // include js here.
-        $this->page->requires->js_call_amd('block_workshoptodo/todo', 'init', ["#$data->rootid"]);
         return parent::render_from_template('block_workshoptodo/block', $data);
     }
 
