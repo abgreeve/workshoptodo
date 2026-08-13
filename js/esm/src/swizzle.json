@@ -4,7 +4,7 @@
     "wrap": "risky"
   },
   "todolist": {
-    "eject": "risky",
-    "wrap": "risky"
+    "eject": "safe",
+    "wrap": "safe"
   }
 }
