@@ -48,10 +48,26 @@ const TodoApp = ({rootid}) => {
         void loadTodos();
     }, []);
 
+    const handleFormSubmit = async(event) => {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const input = form.elements.text;
+        const text = input.value.trim();
+
+        if (text === '') {
+            return;
+        }
+
+        await Repository.createTodo(text);
+        input.value = '';
+        await loadTodos();
+    };
+
     return (
         <div id={rootid} className="block-workshoptodo-app">
             <TodoList todos={todos} rootid={rootid} />
-            <form data-region="add-todo-form">
+            <form data-region="add-todo-form" onSubmit={(event) => void handleFormSubmit(event)}>
                 <label className="visually-hidden" htmlFor={`new-todo-${rootid}`}>New todo</label>
                 <div className="input-group">
                     <input className="form-control" id={`new-todo-${rootid}`} name="text" type="text" placeholder="New todo" required />
