@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${root}"
+
+usage() {
+    cat <<'EOF'
+Usage: ./workshop COMMAND
+
+Commands:
+  start                 Download and start the workshop environment
+  stop                  Stop the workshop environment
+  reset                 Delete the workshop database and start again
+  checkpoint NAME       Switch to master, 01-esm, 02-react, or 03-theming
+  build                 Build the JavaScript for this plugin
+  purge                 Purge Moodle caches
+  shell                 Open a shell in the Moodle container
+  logs                  Follow the Moodle container logs
+EOF
+}
+
+case "${1:-}" in
+    start)
+        docker compose pull
+        docker compose up -d
+        echo "Moodle is starting at ${MOODLE_WWWROOT:-http://localhost:${MOODLE_PORT:-8080}}"
+        echo "Username: admin"
+        echo "Password: MoodleMoot!2026"
+        ;;
+    stop) docker compose down ;;
+    reset)
+        docker compose down --volumes
+        docker compose up -d
+        ;;
+    checkpoint)
+        checkpoint="${2:-}"
+        case "${checkpoint}" in
+            master|01-esm|02-react|03-theming)
+                git switch "${checkpoint}"
+                docker compose exec moodle php admin/cli/upgrade.php --non-interactive
+                docker compose exec moodle php admin/cli/purge_caches.php
+                ;;
+            *) echo "Choose master, 01-esm, 02-react, or 03-theming." >&2; exit 1 ;;
+        esac
+        ;;
+    build)
+        docker compose exec --user "$(id -u):$(id -g)" moodle \
+            npx grunt js --root=public/blocks/workshoptodo
+        ;;
+    purge) docker compose exec moodle php admin/cli/purge_caches.php ;;
+    shell) docker compose exec moodle bash ;;
+    logs) docker compose logs --follow moodle ;;
+    *) usage; exit 1 ;;
+esac
