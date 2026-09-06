@@ -12,14 +12,14 @@ type Todo = {
     completed: boolean;
 };
 
-type TodoListProps = {
+export type Props = {
     todos: Todo[];
     rootid: string;
     onDelete: (id: number) => Promise<void>;
     onToggle: (todo: Todo, completed: boolean) => Promise<void>;
 };
 
-const TodoList = ({todos, rootid, onDelete, onToggle}: TodoListProps) => (
+const TodoList = ({todos, rootid, onDelete, onToggle}: Props) => (
     <ul className="list-group mb-3 workshop-todo" aria-label="Todo list">
         {todos.map((todo) => (
             <li className="list-group-item d-flex align-items-center justify-content-between">
