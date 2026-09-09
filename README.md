@@ -129,7 +129,7 @@ The workshop helper provides several useful commands:
 
 ```bash id="k4zc4p"
 ./workshop build
-./workshop checkpoint 01-esm
+./workshop checkpoint c18ed85
 ./workshop purge
 ./workshop logs
 ./workshop stop

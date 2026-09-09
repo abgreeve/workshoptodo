@@ -12,7 +12,7 @@ Commands:
   start                 Download and start the workshop environment
   stop                  Stop the workshop environment
   reset                 Delete the workshop database and start again
-  checkpoint NAME       Switch to master, 01-esm, 02-react, or 03-theming
+  checkpoint REF        Switch to a checkpoint branch or commit hash
   build                 Build the JavaScript for this plugin
   purge                 Purge Moodle caches
   shell                 Open a shell in the Moodle container
@@ -38,15 +38,22 @@ case "${1:-}" in
         case "${checkpoint}" in
             master|01-esm|02-react|03-theming)
                 git switch "${checkpoint}"
-                docker compose exec moodle php admin/cli/upgrade.php --non-interactive
-                docker compose exec moodle php admin/cli/purge_caches.php
                 ;;
-            *) echo "Choose master, 01-esm, 02-react, or 03-theming." >&2; exit 1 ;;
+            *)
+                if [[ ! "${checkpoint}" =~ ^[0-9a-fA-F]{7,40}$ ]] ||
+                    ! git rev-parse --verify --quiet "${checkpoint}^{commit}" >/dev/null; then
+                    echo "Choose master, 01-esm, 02-react, or 03-theming, or provide a valid commit hash." >&2
+                    exit 1
+                fi
+                git switch --detach "${checkpoint}"
+                ;;
         esac
+        docker compose exec moodle php admin/cli/upgrade.php --non-interactive
+        docker compose exec moodle npx grunt esm
+        docker compose exec moodle php admin/cli/purge_caches.php
         ;;
     build)
-        docker compose exec --user "$(id -u):$(id -g)" moodle \
-            npx grunt js --root=public/blocks/workshoptodo
+        docker compose exec moodle npx grunt esm
         ;;
     purge) docker compose exec moodle php admin/cli/purge_caches.php ;;
     shell) docker compose exec moodle bash ;;
